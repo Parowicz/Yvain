@@ -125,8 +125,7 @@ class Sigmoid:
     """
     S-shaped function with slope center at 'a'. `b` parameter controls skewness of slope
     and direction of the function.
-    When `b < 0` then left side values are fully member of fuzzy set
-        and slope decreases membership to 0.
+    When `b < 0` then left side values are fully member of fuzzy set and slope decreases membership to 0.
     When `b > 0` then left side is not member of fuzzy set and slope increases membership to 1.
     """
 

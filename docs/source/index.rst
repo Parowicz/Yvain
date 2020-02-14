@@ -11,7 +11,7 @@ Welcome to Yvain's documentation!
    :caption: Contents:
 
    membership_functions.rst
-
+   logical_systems.rst
 
 
 Indices and tables

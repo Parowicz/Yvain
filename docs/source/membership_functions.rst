@@ -1,10 +1,6 @@
 ********************
 Membership functions
 ********************
-Fuzzy logic is extending boolean true/false by adding term of partial membership.
-Membership function is element with allows us to grade membership of element to fuzzy set.
-
-# TODO:
 
 Creating membership function
 ############################
@@ -19,8 +15,8 @@ function return 1 when x is equal to given value, 0 otherwise.
     def singleton_at_5(x):
         return 1 if isclose(x, 5) else 0
 
-When possible it's not wise to declare membership functions this way. Popular membership functions
-are parametrised and they'r creation should be abstracted into higher order function:
+It's not wise to declare membership functions this way. Most of the times membership function
+can be parametrised and they'r creation should be abstracted into higher order function:
 
 ::
 
@@ -42,8 +38,8 @@ or simple class with overloaded `__call__`:
         def __init__(self, at):
             self.at = at
 
-Both form are equivalent but this library prefer second form. In Python classes are flexible and
-expandable.
+Both form are equivalent but this library prefer second form. Python classes are flexible and
+expandable than python lambda calculus.
 
 Predefined membership functions
 ###############################

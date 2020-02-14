@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     a, b, c = 2, 5, 8
-    draw_mf(Triangle(a=a, b=b, c=c), 0, 10,
-            f"Triangle(a={a}, b={b}, c={c})", False)
+    draw_mf(Triangle(a=a, b=b, c=c), 0, 10, f"Triangle(a={a}, b={b}, c={c})")
     plt.vlines(b, ymin=0, ymax=1, colors="gray",
                linestyles="--")

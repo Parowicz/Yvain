@@ -25,8 +25,8 @@ class LogicalSystem:
         to fuzzy set anymore and elements that was previously not in fuzzy set will
         gain full membership. Intermediate memberships will change proportionally
 
-        :param membership: Membership function to complement
-        :return: New membership function where all memberships are reversed
+        :param membership: :math:`\\mu`
+        :return: :math:`\\mu\\prime(x)=1 - \\mu(x)`
         """
 
         return lambda x: 1 - membership(x)
@@ -37,6 +37,15 @@ class LogicalSystem:
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        By default t-conorm is defined by they'r correlation with t-norm. For performance and
+        precision reasons it should be overridden in subclass (if possible)
+
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = \\neg(\\mu_1(x) and \\mu_2(x))`
+        """
+
         return self.complement(
             self.t_norm(self.complement(membership_a), self.complement(membership_b)))
 
@@ -44,16 +53,35 @@ class LogicalSystem:
 class Zadeh(LogicalSystem):
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=min(\\mu_1(x), \\mu2(x))`
+        """
+
         return lambda x: min(membership_a(x), membership_b(x))
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=max(\\mu_1(x), \\mu2(x))`
+        """
+
         return lambda x: max(membership_a(x), membership_b(x))
 
 
 class Drastic(LogicalSystem):
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)` = If :math:`\\mu_1(x) = 1`
+                 or :math:`\\mu_2(x) = 1` then return 1 else 0
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -69,6 +97,13 @@ class Drastic(LogicalSystem):
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)` = If :math:`\\mu_1(x) = 0`
+                 or :math:`\\mu_2(x) = 0` then return 0 else 1
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -86,10 +121,22 @@ class Drastic(LogicalSystem):
 class Product(LogicalSystem):
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = \\mu_1(x) * \\mu_2(x)`
+        """
+
         return lambda x: membership_a(x) * membership_b(x)
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = \\mu_1(x) + \\mu_2(x) - \\mu_1(x) * \\mu_2(x)`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -102,6 +149,12 @@ class Product(LogicalSystem):
 class Lukasiewicz(LogicalSystem):
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = max(0, \\mu_1(x)) + \\mu_2(x) - 1)`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -112,12 +165,25 @@ class Lukasiewicz(LogicalSystem):
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = min(\\mu_1(x)) + \\mu_2(x), 1)`
+        """
+
         return lambda x: min(membership_a(x) + membership_b(x), 1)
 
 
 class Fodor(LogicalSystem):
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1(x)`
+        :param membership_b: :math:`\\mu_2(x)`
+        :return: :math:`\\mu\\prime(x)` = If :math:`\\mu_1(x) + \\mu_2(x) > 1`
+                then return :math:`min(\\mu_1(x), \\mu_2(x))` else 0
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -131,6 +197,13 @@ class Fodor(LogicalSystem):
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1(x)`
+        :param membership_b: :math:`\\mu_2(x)`
+        :return: :math:`\\mu\\prime(x)` = If :math:`\\mu_1(x) + \\mu_2(x) < 1`
+                then return :math:`max(\\mu_1(x), \\mu_2(x))` else 1
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)

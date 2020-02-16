@@ -58,3 +58,8 @@ to our system in similar way as adding inputs:
         "average": Triangle(7.5, 12.5, 17.5),
         "generous": Triangle(15, 20, 25),
     })
+
+.. plot:: plots/fuzzy_systems/tip.py
+
+Fuzzy rules
+###########

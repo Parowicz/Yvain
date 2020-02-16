@@ -32,3 +32,5 @@ Predefined logical systems
 
 .. automodule:: yvain.logical_systems
     :members:
+    :private-members:
+

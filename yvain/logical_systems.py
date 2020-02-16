@@ -23,7 +23,7 @@ class LogicalSystem:
         Strong negation. Fuzzy set resulting from this operation will have
         all memberships reversed - i.e. element with full membership will not belong
         to fuzzy set anymore and elements that was previously not in fuzzy set will
-        gain full membership. Intermediate memberships will change proportionally
+        gain full membership. Intermediate memberships will change proportionally.
 
         :param membership: :math:`\\mu`
         :return: :math:`\\mu\\prime(x)=1 - \\mu(x)`
@@ -159,7 +159,7 @@ class Lukasiewicz(LogicalSystem):
             a = membership_a(x)
             b = membership_b(x)
 
-            return max(0, a + b - 1)
+            return max(0., a + b - 1)
 
         return norm
 
@@ -218,11 +218,21 @@ class Fodor(LogicalSystem):
 
 class ParametrizedLogicalSystem(LogicalSystem):
     @property
-    def p(self):
+    def p(self) -> float:
         return self._p
 
     def t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        Most of the time parametrized logical systems equations would not work for edge
+        values of `p` (like 0, 1, inf, -inf). Such systems are inheriting non-parametrised
+        system behaviours in such cases.
+
+        :param membership_a: :math:`\\mu_1(x)`
+        :param membership_b: :math:`\\mu_2(x)`
+        :return: :math:`\\mu\\prime(x)`
+        """
+
         if self.__logic is not None:
             return self.__logic.t_norm(membership_a, membership_b)
         else:
@@ -230,6 +240,16 @@ class ParametrizedLogicalSystem(LogicalSystem):
 
     def t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        Most of the time parametrized logical systems equations would not work for edge
+        values of `p` (like 0, 1, inf, -inf). Such systems are inheriting non-parametrised
+        system behaviours in such cases.
+
+        :param membership_a: :math:`\\mu_1(x)`
+        :param membership_b: :math:`\\mu_2(x)`
+        :return: :math:`\\mu\\prime(x)`
+        """
+
         if self.__logic is not None:
             return self.__logic.t_conorm(membership_a, membership_b)
         else:
@@ -237,16 +257,42 @@ class ParametrizedLogicalSystem(LogicalSystem):
 
     def _t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        Implementation of t-norm covering cases when t-norm is not inherited from
+        non-parametrised logic.
+
+        :param membership_a: :math:`\\mu_1(x)`
+        :param membership_b: :math:`\\mu_2(x)`
+        :return: :math:`\\mu\\prime(x)`
+        """
+
         raise NotImplementedError
 
     def _t_conorm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        Implementation of t-conorm covering cases when t-conorm is not inherited from
+        non-parametrised logic. It defaults to general equation derived from t-norm/conorm relation
+
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x) = \\neg(\\mu_1(x) and \\mu_2(x))`
+        """
+
         return super(ParametrizedLogicalSystem, self).t_conorm(membership_a, membership_b)
 
     def _inherit_logic(self) -> Optional[LogicalSystem]:
+        """
+        Choose if given parametrized logic should inherit some of parametrised logic
+        norms.
+
+        :return: LogicalSystem with norms should be used by this logical system.
+                 None if embedded norms should be used.
+        """
+
         return None
 
-    def __init__(self, p):
+    def __init__(self, p: float):
         self._p = p
         self.__logic = self._inherit_logic()
 
@@ -254,6 +300,12 @@ class ParametrizedLogicalSystem(LogicalSystem):
 class Frank(ParametrizedLogicalSystem):
     def _t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=\\log_p(1 + \\frac{(p^{\\mu_1(x)} - 1) * (p^{\\mu_2(x)} - 1)}{p - 1})`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
@@ -279,11 +331,17 @@ class Frank(ParametrizedLogicalSystem):
 class ShweizerSklar(ParametrizedLogicalSystem):
     def _t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=max(0, \\mu_1(x)^p + \\mu_2(x)^p - 1)^{1/p}`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
 
-            return max(0, ((a ** self.p) + (b ** self.p) - 1)) ** (1 / self.p)
+            return max(0., ((a ** self.p) + (b ** self.p) - 1)) ** (1 / self.p)
 
         return norm
 
@@ -299,11 +357,17 @@ class ShweizerSklar(ParametrizedLogicalSystem):
 class Yager(ParametrizedLogicalSystem):
     def _t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=max(0, 1 - ((1 - \\mu_1(x))^p + (1 - \\mu_2(x))^p))^{1/p}`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)
 
-            return max(0, 1 - ((1 - a) ** self.p + (1 - b) ** self.p) ** (1 / self.p))
+            return max(0., 1 - ((1 - a) ** self.p + (1 - b) ** self.p) ** (1 / self.p))
 
         return norm
 
@@ -320,6 +384,13 @@ class Yager(ParametrizedLogicalSystem):
 class Dombi(ParametrizedLogicalSystem):
     def _t_norm(self, membership_a: MembershipFunction, membership_b: MembershipFunction) \
             -> MembershipFunction:
+        """
+        :param membership_a: :math:`\\mu_1`
+        :param membership_b: :math:`\\mu_2`
+        :return: :math:`\\mu\\prime(x)=\\frac{1}{1 +
+                    (((\\frac{1 - \\mu_1(x)}{\\mu_1(x)})^p + (\\frac{1 - \\mu_2(x)}{\\mu_2(x)})^p)^p)^{1/p}}`
+        """
+
         def norm(x):
             a = membership_a(x)
             b = membership_b(x)

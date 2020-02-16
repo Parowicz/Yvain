@@ -1,4 +1,3 @@
-from math import isclose
 from typing import Callable
 
 import numpy as np

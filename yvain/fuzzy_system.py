@@ -173,7 +173,7 @@ class MamdaniSystem:
             for state, membership in memberships.items()
         })
 
-    def add_rule(self, fuzzy_rule: FuzzyRule):
+    def add_rule(self, fuzzy_rule: Implication):
         self.rule_set.append(fuzzy_rule)
 
     def run(self, values: Dict[str, float], universe: Tuple[float, float]):
@@ -183,14 +183,21 @@ class MamdaniSystem:
             raise ValueError(
                 f"Upper bound of universe ({end}) is lower than lower bound ({start})")
 
-        fuzzy_sets = (rule.compile(self.inputs, self.outputs)(values)
-                      for rule in self.rule_set)
-        output_set = reduce(FuzzySet.__or__, fuzzy_sets)
+        output_sets = {}
+        for rule in self.rule_set:
+            fuzzy_result = rule.compile(self.inputs, self.outputs)(values)
+            if rule.variable_name not in output_sets:
+                output_sets[rule.variable_name] = fuzzy_result
+            else:
+                output_sets[rule.variable_name] |= fuzzy_result
 
-        return self.defuzzify(output_set, start, end)
+        return {
+            variable_name: self.defuzzify(fuzzy_set, start, end)
+            for variable_name, fuzzy_set in output_sets.items()
+        }
 
     def __init__(self, inputs: Dict[str, FuzzyVariable], outputs: Dict[str, FuzzyVariable],
-                 rules: List[FuzzyRule], logic: LogicalSystem,
+                 rules: List[Implication], logic: LogicalSystem,
                  defuzzification_method: DefuzzificationMethod = centroid):
         self.inputs = inputs
         self.outputs = outputs

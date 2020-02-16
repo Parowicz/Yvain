@@ -12,6 +12,7 @@ Welcome to Yvain's documentation!
 
    membership_functions.rst
    logical_systems.rst
+   fuzzy_systems.rst
 
 
 Indices and tables

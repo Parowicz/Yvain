@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import List, Dict, Tuple, Callable
 
-from functools import reduce
 from yvain.fuzzy_set import FuzzySet, centroid, DefuzzificationMethod
 from yvain.logical_systems import LogicalSystem, Zadeh
 from yvain.membership_functions import MembershipFunction

@@ -1,11 +1,17 @@
 from yvain.logical_systems import *
-from yvain.membership_functions import Triangle
+from yvain.membership_functions import Triangle, Gaussian
 import pytest
 
 _TRIANGLE_UNIVERSE = [
     Triangle(0, 5, 10),
     Triangle(5, 10, 15),
     Triangle(10, 15, 20)
+]
+
+_GAUSSIAN_UNIVERSE = [
+    Gaussian(5, 2),
+    Gaussian(7, 1),
+    Gaussian(10, 4)
 ]
 
 _LOGICS = [

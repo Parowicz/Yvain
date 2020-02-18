@@ -64,7 +64,7 @@ to our system in similar way as adding inputs:
 Fuzzy rules
 ###########
 
-Another important think in fuzzy system is to describe relationships between inputs and outputs.
+Another important thing in fuzzy system is to describe relationships between inputs and outputs.
 Such relationships are called `rules`. Fuzzy rules in Mamdani system are formulated as
 `IF service is good THEN tip is average`, we are also allowed to use operators known from boolean logic
 like `AND`, `OR`. In this library fuzzy rule can be build via fluent api starting from `when` function:
@@ -77,7 +77,7 @@ like `AND`, `OR`. In this library fuzzy rule can be build via fluent api startin
 
 
 Mamdani system rule always have to end with `.then` method call and there can be only one such call per rule.
-`OR` and `AND` operators are chained via `.or_is` and `.and_is` methods. Those methods does always take
+`OR` and `AND` operators are chained via `.or_is` and `.and_is` methods. Those methods do always take
 two arguments - variable and state.
 
 
@@ -92,7 +92,7 @@ two arguments - variable and state.
 
 Having all variables and rules added to the system we can use it by simply calling `.run` method.
 This method will require dictionary mapping variable to crisp value. This value will be fuzzified,
-rules are going to be applied and we will get mapping from output variable to crisp value (our result).
+rules are going to be applied, and we will get mapping from output variable to crisp value (our result).
 
 ::
 

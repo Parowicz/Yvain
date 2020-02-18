@@ -15,8 +15,8 @@ function return 1 when x is equal to given value, 0 otherwise.
     def singleton_at_5(x):
         return 1 if isclose(x, 5) else 0
 
-It's not wise to declare membership functions this way. Most of the times membership function
-can be parametrised and they'r creation should be abstracted into higher order function:
+It's not wise to declare membership functions this way. Most of the time  membership function
+can be parametrised, and they'r creation should be abstracted into higher order function:
 
 ::
 

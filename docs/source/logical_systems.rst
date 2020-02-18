@@ -4,7 +4,7 @@ Logical Systems
 
 Logical system extends boolean logic operator into fuzzy domain.
 `And` operator is mapped by `t-norm` while `Or` operation is substituted by `t-conorm`.
-Negation operator is fuzzy domain is commonly referred as `complement` and most of the times
+Negation operator is fuzzy domain is commonly referred as `complement` and most of the time
 is defined as :math:`1 - \mu(x)`
 
 Fuzzy Negation
@@ -29,12 +29,12 @@ Parametrized logical systems
 ############################
 
 There are logical systems that allow parametrisation of they'r t-norm and t-conorm behaviour
-(complement operator is most of the times untouched). Most of the times parametrised systems
-are depend on single parameter `p`. Popular pater is such systems is to use other system when
+(complement operator is most of the time untouched). Most of the time parametrised systems
+are depended on single parameter `p`. Popular pater is such systems is to use other system when
 value of `p` reach some edge case (like `0`, `inf`, `-inf`)
 
 
-For example we can take `Dombi` system with parameter can vary in range [0,inf]. Each figure represents
+For example, we can take `Dombi` system with parameter can vary in range [0,inf]. Each figure represents
 t-norm and t-conorm combining 3 membership functions with different value of `p`.
 
 For `p` values close to zero we are getting results similar to `Drastic` system:

@@ -1,7 +1,9 @@
+from math import isclose
+
 import pytest
 
 from yvain.fuzzy_set import FuzzySet
-from yvain.fuzzy_system import MamdaniSystem, when, FuzzyVariable
+from yvain.fuzzy_system import MamdaniSystem, when, FuzzyVariable, SugenoSystem
 from yvain.membership_functions import Gaussian, Trapezoid, Triangle
 
 
@@ -57,3 +59,26 @@ def test_r_sets_example():
 
     system_output = system.run({"service": 3, "food": 8}, (0, 25))
     assert system_output["tip"] == pytest.approx(14.89, 0.1)
+
+
+def test_sugeno_output_is_result_of_output_function():
+    system = SugenoSystem.empty()
+
+    mf = Triangle(1.5, 4.5, 7.5)
+    system.add_input("service", {
+        "poor": Triangle(-3, 0, 3),
+        "good": mf,
+        "excellent": Triangle(6, 9, 13),
+    })
+
+    def output_function(out):
+        return out["service"] * 2
+
+    system.add_rule(when("service", "good").compute(output_function))
+
+    for i in range(10):
+        entry = {"service": i}
+        if isclose(mf(i), 0):
+            assert system.run(entry) == 0
+        else:
+            assert system.run(entry) == pytest.approx(output_function(entry))
